@@ -327,9 +327,9 @@ For each of the 3 calls, use:
 - `prompt`: Enhancement instructions (see prompt templates below — different for first vs subsequent screenshots)
 - `images`: See below for which images to include
 - `outputPath`: Different path for each version:
-  - `./screenshots/01-[benefit-slug]/v1.png`
-  - `./screenshots/01-[benefit-slug]/v2.png`
-  - `./screenshots/01-[benefit-slug]/v3.png`
+  - `./screenshots/01-[benefit-slug]/v1.jpg`
+  - `./screenshots/01-[benefit-slug]/v2.jpg`
+  - `./screenshots/01-[benefit-slug]/v3.jpg`
 
 #### First screenshot (no approved template yet)
 
@@ -363,7 +363,7 @@ The final result should look like it was designed by a professional App Store sc
 
 Use **two images** as input:
 1. The **scaffold** for this benefit (`screenshots/0N-[benefit-slug]/scaffold.png`) — defines the layout
-2. The **first approved screenshot** (`screenshots/final/01-[first-benefit-slug].png`) — defines the style template
+2. The **first approved screenshot** (`screenshots/final/01-[first-benefit-slug].jpg`) — defines the style template
 
 **Subsequent screenshot prompt template:**
 
@@ -400,8 +400,8 @@ No watermarks, no extra text, no app store UI chrome.
 
 ```bash
 TARGET_W=1290 && TARGET_H=2796 && \
-for INPUT in screenshots/01-[benefit-slug]/v1.png screenshots/01-[benefit-slug]/v2.png screenshots/01-[benefit-slug]/v3.png; do
-  OUTPUT="${INPUT%.png}-resized.png"
+for INPUT in screenshots/01-[benefit-slug]/v1.jpg screenshots/01-[benefit-slug]/v2.jpg screenshots/01-[benefit-slug]/v3.jpg; do
+  OUTPUT="${INPUT%.jpg}-resized.jpg"
   cp "$INPUT" "$OUTPUT"
   W=$(sips -g pixelWidth "$OUTPUT" | tail -1 | awk '{print $2}')
   H=$(sips -g pixelHeight "$OUTPUT" | tail -1 | awk '{print $2}')
@@ -414,7 +414,7 @@ for INPUT in screenshots/01-[benefit-slug]/v1.png screenshots/01-[benefit-slug]/
 done
 ```
 
-The script crops to the correct aspect ratio (top-center aligned — sides trimmed equally, top edge preserved so the headline stays put) and resizes to exact pixel dimensions. The resized image is saved as a separate file with `-resized.png` appended.
+The script crops to the correct aspect ratio (top-center aligned — sides trimmed equally, top edge preserved so the headline stays put) and resizes to exact pixel dimensions. The resized image is saved as a separate file with `-resized.jpg` appended.
 
 Target dimensions per display size — adjust `TARGET_W` and `TARGET_H`:
 - iPhone 6.5": `TARGET_W=1242 TARGET_H=2688`
@@ -423,7 +423,7 @@ Target dimensions per display size — adjust `TARGET_W` and `TARGET_H`:
 
 **Step 4: Review all 3 versions with the user**
 
-Present all 3 **resized** versions (the `-resized.png` files) to the user using the Read tool. Never show the raw Nano Banana output — always show the post-processed versions.
+Present all 3 **resized** versions (the `-resized.jpg` files) to the user using the Read tool. Never show the raw Nano Banana output — always show the post-processed versions.
 
 Label them clearly as **Version 1**, **Version 2**, and **Version 3** and ask the user to pick their favourite or request changes.
 
@@ -431,7 +431,7 @@ Label them clearly as **Version 1**, **Version 2**, and **Version 3** and ask th
 
 If the user wants changes, use `edit_image` with **three images** as input:
 1. The **scaffold** (`scaffold.png`) — anchors the layout (text position, device placement, screenshot)
-2. The **style template** (the first approved screenshot from `screenshots/final/01-*.png`) — defines the device frame rendering and overall visual style that must be consistent across the entire set
+2. The **style template** (the first approved screenshot from `screenshots/final/01-*.jpg`) — defines the device frame rendering and overall visual style that must be consistent across the entire set
 3. The **approved design** (the version the user liked best for this specific screenshot) — anchors the creative direction and breakout element approach
 
 The prompt should reference all three:
@@ -458,7 +458,7 @@ Once the user picks a winner, copy the resized version to `screenshots/final/`:
 
 ```bash
 mkdir -p screenshots/final
-cp "screenshots/01-[benefit-slug]/v2-resized.png" "screenshots/final/01-[benefit-slug].png"
+cp "screenshots/01-[benefit-slug]/v2-resized.jpg" "screenshots/final/01-[benefit-slug].jpg"
 ```
 
 This keeps `final/` clean — only approved, App Store-ready screenshots, one per benefit, numbered in order. Then move to the next benefit.
@@ -489,19 +489,19 @@ Save generated screenshots to a `screenshots/` directory in the project root, or
 screenshots/
   01-track-card-prices/       ← working versions for benefit 1
     scaffold.png              ← deterministic compose.py output (text + frame + screenshot)
-    v1.png                    ← Nano Banana enhanced version 1
-    v1-resized.png            ← cropped/resized to App Store dimensions
-    v2.png
-    v2-resized.png
-    v3.png
-    v3-resized.png
+    v1.jpg                    ← Nano Banana enhanced version 1
+    v1-resized.jpg            ← cropped/resized to App Store dimensions
+    v2.jpg
+    v2-resized.jpg
+    v3.jpg
+    v3-resized.jpg
   02-search-any-card/         ← working versions for benefit 2
     scaffold.png
-    v1.png
+    v1.jpg
     ...
   final/                      ← approved screenshots, ready to upload
-    01-track-card-prices.png
-    02-search-any-card.png
+    01-track-card-prices.jpg
+    02-search-any-card.jpg
 ```
 
 The `final/` folder is the only one the user needs to care about — it contains one approved, App Store-ready screenshot per benefit, numbered in order. The benefit subfolders contain all working versions and can be ignored or deleted after the set is complete.
@@ -518,7 +518,7 @@ After each screenshot is generated (or after the full set is complete), save gen
   - Benefit headline (ACTION VERB + DESCRIPTOR)
   - Benefit subfolder path (e.g., `screenshots/01-track-card-prices/`)
   - Which version the user chose (v1, v2, or v3)
-  - Final file path (e.g., `screenshots/final/01-track-card-prices.png`)
+  - Final file path (e.g., `screenshots/final/01-track-card-prices.jpg`)
   - Simulator screenshot used (file path)
   - Breakout elements described in the prompt
   - Status: generated / approved / needs-redo
@@ -534,7 +534,7 @@ Once ALL screenshots in the set are approved and saved to `final/`, generate a s
 SKILL_DIR="$HOME/.claude/skills/aso-appstore-screenshots"
 
 python3 "$SKILL_DIR/showcase.py" \
-  --screenshots screenshots/final/01-*.png screenshots/final/02-*.png screenshots/final/03-*.png \
+  --screenshots screenshots/final/01-*.jpg screenshots/final/02-*.jpg screenshots/final/03-*.jpg \
   --github "github.com/adamlyttleapps" \
   --output screenshots/showcase.png
 ```
